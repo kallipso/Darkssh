@@ -208,7 +208,8 @@ By- [𝙎𝙞𝙩𝙝𝙪𝙢 𝘽𝙖𝙩𝙧𝙤𝙬 🇱🇰](https://t.me/si
 sudo -s
 ```
 ```
-apt-get update -y; apt-get upgrade -y; wget https://raw.githubusercontent.com/sbatrow/DARKSSH-MANAGER/master/Dark; chmod 777 Dark; ./Dark
+
+-get update -y; apt-get upgrade -y; wget https://raw.githubusercontent.com/kallipso/Darkssh/main/Dark; chmod 777 Dark; ./Dark
 
 ```
 
