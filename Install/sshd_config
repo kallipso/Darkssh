@@ -1,4 +1,5 @@
-Port 22
+Port 143
+MaxAuthTries 1
 Protocol 2
 KeyRegenerationInterval 3600
 ServerKeyBits 1024
