@@ -5,3 +5,7 @@ wget -O /etc/apt/sources.list https://raw.githubusercontent.com/sbatrow/DARKSSH-
 Ubuntu 18
 
 wget -O /etc/apt/sources.list https://raw.githubusercontent.com/sbatrow/DARKSSH-MANAGER/master/Install/Sources_list/18.04/sources.list
+
+Ubuntu 20
+
+wget -O /etc/apt/sources.list https://raw.githubusercontent.com/sbatrow/DARKSSH-MANAGER/master/Install/Sources_list/20.04/sources.list
