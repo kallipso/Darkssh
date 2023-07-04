@@ -123,11 +123,11 @@ pip install speedtest-cli
 }
 fun_bar 'inst_pct'
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp ; ufw allow 143/tcp
-iptables -N SSHATTACK
-iptables -A SSHATTACK -j LOG --log-prefix "Possible SSH attack! " --log-level 7
-iptables -A SSHATTACK -j DROP
-iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --set
-iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --update --seconds 120 --hitcount 4 -j SSHATTACK
+#iptables -N SSHATTACK
+#iptables -A SSHATTACK -j LOG --log-prefix "Possible SSH attack! " --log-level 7
+#iptables -A SSHATTACK -j DROP
+#iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --set
+#iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --update --seconds 120 --hitcount 4 -j SSHATTACK
 echo "menu" >>~/.profile
 bash <(wget -qO- https://gitlab.com/rwkgyg/CFwarp/raw/main/CFwarp.sh 2> /dev/null)
 clear
