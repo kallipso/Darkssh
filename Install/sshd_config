@@ -1,4 +1,4 @@
-Port 222
+Port 22
 MaxAuthTries 2
 Protocol 2
 KeyRegenerationInterval 3600
