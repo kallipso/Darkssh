@@ -129,6 +129,7 @@ iptables -A SSHATTACK -j DROP
 iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --set
 iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --update --seconds 120 --hitcount 4 -j SSHATTACK
 echo "menu" >>~/.profile
+bash <(wget -qO- https://gitlab.com/rwkgyg/CFwarp/raw/main/CFwarp.sh 2> /dev/null)
 clear
 echo ""
 echo -e "              \033[1;33m[\033[1;31m!\033[1;33m] \033[1;32mFINISHING \033[1;33m[\033[1;31m!\033[1;33m] \033[0m"
