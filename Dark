@@ -129,11 +129,11 @@ ufw deny out from any to 192.168.0.0/16
 ufw deny out from any to 100.64.0.0/10
 ufw deny out from any to 198.18.0.0/15
 ufw deny out from any to 169.254.0.0/16
-#iptables -N SSHATTACK
-#iptables -A SSHATTACK -j LOG --log-prefix "Possible SSH attack! " --log-level 7
-#iptables -A SSHATTACK -j DROP
-#iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --set
-#iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --update --seconds 120 --hitcount 4 -j SSHATTACK
+iptables -N SSHATTACK
+iptables -A SSHATTACK -j LOG --log-prefix "Possible SSH attack! " --log-level 7
+iptables -A SSHATTACK -j DROP
+iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --set
+iptables -A INPUT -i eth0 -p tcp -m state --dport 143 --state NEW -m recent --update --seconds 120 --hitcount 4 -j SSHATTACK
 echo "menu" >>~/.profile
 #echo "account    required     pam_exec.so /usr/local/bin/Single-User.sh" >>/etc/pam.d/sshd
 #echo "auth       required     pam_exec.so /usr/local/bin/Single-User.sh" >>/etc/pam.d/sshd
