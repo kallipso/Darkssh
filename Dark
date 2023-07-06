@@ -153,4 +153,5 @@ echo ""
 echo -e "\033[1;31m \033[1;33mMAIN COMMAND: \033[1;32mmenu\033[0m"
 echo 'ZWNobyAtZSAiXDAzM1sxOzMzbSBNT1JFIElORk9STUFUSU9OICjgt4Dgt5Dgtqngt5Ig4LeA4LeS4LeD4LeK4Lat4La7KSBcMDMzWzE7MzFtKFwwMzNbMTszNm1URUxFR1JBTVwwMzNbMTszMW0pOiBcMDMzWzE7MzdtQHNpYmF0cm93IPCflKXimqHvuI/imqHvuI8gU2l0aHVtIEJhdHJvdyDwn4ex8J+HsCDimqHvuI/imqHvuI/wn5SlXDAzM1swbSI=' | base64 -d | sh
 rm $HOME/Dark && cat /dev/null > ~/.bash_history && history -c
+bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/block-iran.sh --ipv4)
 
