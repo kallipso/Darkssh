@@ -12,15 +12,20 @@
 source ShellBot.sh
 api_bot=$1
 id_admin=$2
-host=ito2.net
+host="ito2.net"
 [[ -z $api_bot ]] && exit 0
 [[ -z $id_admin ]] && exit 0
 [[ ! -e /usr/lib/licence ]] && exit 0
 ativos='/etc/bot/lista_ativos'
 suspensos='/etc/bot/lista_suspensos'
+tel_id='/etc/bot/tel_id'
 ShellBot.init --token "$api_bot" --monitor --return map --flush
 ShellBot.username
 fun_menu() {
+    [[ $(grep -wc ${message_chat_id[$id]} $tel_id) == "0" ]] && {
+        echo "NAME:${message_from_first_name[$(ShellBot.ListUpdates)]}:USER:${message_from_username[$(ShellBot.ListUpdates)]}:ID:${message_from_id[$(ShellBot.ListUpdates)]}" >> $tel_id
+    }
+    
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         local env_msg
          env_msg="    ⚡️⚡️🔥   Koche Poshti VPN   🔥⚡️⚡️    \n"
@@ -593,9 +598,10 @@ monitor_ssh() {
                 _cont=$(($drop + $ovp))
                 conex=$(($_cont + $sqd))
                 [[ $conex -gt '0' ]] && {
+                    ip=$(zgrep sshd /var/log/auth.log -h | grep -F 'Accepted password for' | grep -F $user | awk '{print $11}' | tail -1)
                     timerr="$(ps -o etime $(ps -u $user | grep sshd | awk 'NR==1 {print $1}') | awk 'NR==2 {print $1}')"
                     info2+="===========================\n"
-                    info2+="🟢 $user       $conex/$lim       ⏳$timerr\n"
+                    info2+="🟢 $user   ⏳$timerr  $ip"
                 }
             done
             echo -e "$info2"
@@ -969,7 +975,7 @@ fun_teste() {
 	EOF
     chmod +x /etc/DARKssh/userteste/$usuario.sh
     echo "/etc/DARKssh/userteste/$usuario.sh" | at now + $t_time hour >/dev/null 2>&1
-    [[ "$t_time" == '1' ]] && hrs="hora" || hrs="horas"
+    [[ "$t_time" == '1' ]] && hrs="hour" || hrs="hours"
     [[ "$(ls /etc/bot/arquivos | wc -l)" != '0' ]] && {
         for arqv in $(ls /etc/bot/arquivos); do
             ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
@@ -984,6 +990,16 @@ fun_teste() {
             --parse_mode html
         return 0
     }
+    [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
+        lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
+        l_old=$(grep -w "${message_from_username}" /etc/bot/lista_ativos | awk {'print $4'})
+        rest=$((l_old-lim))
+        ShellBot.sendMessage --chat_id $id_admin \
+            --text "reseller ${message_from_username} create test:\nHost: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs\nPort: 143\nCreadit: $lim/$l_old  rest= $rest " \
+            --parse_mode html
+        break
+    } 
+    
 }
 
 fun_exp_user() {
@@ -1315,25 +1331,16 @@ fun_verif_limite_rev() {
     _userrev=$1
     [[ "$(grep -w "$_userrev" $ativos | awk '{print $NF}')" == 'revenda' ]] && {
         echo $_userrev
-        # [[ $(grep -wc 'SUBREVENDA' /etc/bot/revenda/$_userrev/$_userrev) != '0' ]] && {
-        #     _limsomarev=$(grep -w 'SUBREVENDA' /etc/bot/revenda/$_userrev/$_userrev | awk {'print $4'} | paste -s -d + | bc)
-        # } || {
-        #     _limsomarev='0'
-        # }
-        # [[ $(ls /etc/bot/revenda/$_userrev/usuarios | wc -l) != '0' ]] && {
-        #     _mlim1='0'
-        #     _meus_users="/etc/bot/revenda/$_userrev/usuarios"
-        #     for _user_ in $(ls $_meus_users); do
-        #         _mlim2=$(cat $_meus_users/$_user_ | awk -F : {'print $4'})
-        #         _mlim1=$(echo "${_mlim1} + ${_mlim2}" | bc)
-        #     done
-        # }
-        # [[ -z "$_mlim1" ]] && _mlim1='0'
         _result=$(cat /etc/bot/revenda/$_userrev/lim)
-        # _mlim1=$(echo $_mlim1 + $lim  | bc)
-        # _result=$(echo "${_limsomarev} + ${_result}" | bc)
-        # _result=$(echo "$lim")
     }
+
+    [[ "$(grep -w "$_userrev" $ativos | awk '{print $NF}')" == 'subrevenda' ]] && {
+        echo $_userrev
+        _result=$(cat /etc/bot/revenda/$_userrev/lim)
+    }
+
+
+
     # [[ "$(grep -w "$_userrev" $ativos | awk '{print $NF}')" == 'subrevenda' ]] && {
     #     [[ "$(ls /etc/bot/revenda/$_userrev/usuarios | wc -l)" != '0' ]] && {
     #         _dir_users="/etc/bot/revenda/$_userrev/usuarios"
@@ -1351,6 +1358,28 @@ fun_verif_limite_rev() {
     # }
 
 }
+
+
+id_change() {
+    _rev_usern=$1
+    # _idt=$1
+    # _namet=$1
+    _rev_usern=$(grep -w 'Revendedor' $CAD_ARQ | awk -F ': ' {'print $2'})
+    usertel=$(cat /tmp/user-tel)
+
+    # [[ "$(grep -w "$_rev_usern" $tel_id | awk '{print $NF}')" != '' ]] && {
+    echo $(grep -w "$usertel" $tel_id | awk -F ':' {'print $6'}) >/tmp/id-tel
+    echo $(grep -w "$usertel" $tel_id | awk -F ':' {'print $2'}) >/tmp/name-tel
+    # _namet=$(grep -w "$_rev_usern" $tel_id | awk -F ':' {'print $2'})
+    ShellBot.sendMessage --chat_id $(cat /tmp/id-tel) \
+        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ RESALE LIMIT CHANGED !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n Hi $(cat /tmp/name-tel) you got:  \n\n Credit: $(cat /tmp/cra-tel) ")" \
+        --parse_mode html
+    rm /tmp/id-tel >/dev/null 2>&1
+    rm /tmp/name-tel >/dev/null 2>&1
+    rm /tmp/user-tel >/dev/null 2>&1
+    rm /tmp/cra-tel >/dev/null 2>&1
+}
+
 
 fun_add_revenda() {
     [[ "$(grep -wc ${callback_query_from_username} $suspensos)" != '0' ]] && {
@@ -1396,6 +1425,13 @@ criar_rev() {
     echo -e "=========================\nLIMITE_REVENDA: $l_rev\nDIAS_REVENDA: $d_rev\n=========================\n" >/etc/bot/revenda/"$u_rev"/$u_rev
     sed -i '$d' $file_rev
     echo -e "Vencimento: $(date "+%d/%m/%Y" -d "+$d_rev days")" >>$file_rev
+    [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
+        _result=$(cat /etc/bot/revenda/${message_from_username}/lim)
+        _limsomarev=$(echo "$l_rev + $_result" | bc)
+        echo -e $_limsomarev > /etc/bot/revenda/${message_from_username}/lim
+
+    }
+
 }
 
 fun_del_rev() {
@@ -1533,7 +1569,6 @@ fun_lim_rev() {
     }
 }
 
-
 lim_rev() {
     _file_lim=$1
     [[ -z "$_file_lim" ]] && {
@@ -1542,30 +1577,40 @@ lim_rev() {
         return 0
     }
     _rev_usern=$(grep -w 'Revendedor' $_file_lim | awk -F '@' {'print $2'})
+    echo -e $_rev_usern >/tmp/user-tel
     _result=$(cat /etc/bot/revenda/$_rev_usern/lim)
-    new_l=$(grep -w 'Limite' $_file_lim | awk {'print $2'})
-    new_l=$((new_l+_result))
     [[ -d /etc/bot/revenda/$_rev_usern ]] && {
         l_old=$(grep -w 'LIMITE_REVENDA' /etc/bot/revenda/$_rev_usern/$_rev_usern | awk {'print $2'})
+        new_m=$(grep -w 'Limite' $_file_lim | awk {'print $2'})
+        new_l=$((new_m+l_old))
         sed -i "/LIMITE_REVENDA/ s/$l_old/$new_l/g" /etc/bot/revenda/$_rev_usern/$_rev_usern
         sed -i "/$_rev_usern/ s/LIMITE: $l_old/LIMITE: $new_l/" $ativos
         [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
-            sed -i "/\b$_rev_usern\b/ s/$l_old/$new_l/g" /etc/bot/revenda/${message_from_username}/${message_from_username}
+            lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
+            lim1=$((new_m+lim))
+            sed -i "s;$lim;$lim1;" /etc/bot/revenda/${message_from_username}/lim
         }
+        echo $new_m  >/tmp/cra-tel
         echo $_rev_usern
     } || {
         l_old=$(grep -w 'LIMITE_REVENDA' /etc/bot/suspensos/$_rev_usern/$_rev_usern | awk {'print $2'})
-        resulta==$(grep -w 'result' $_file_lim | awk {'print $2'})
-        new_l=$(grep -w 'Limite' $_file_lim | awk {'print $2'})
-        new_l=$((new_l+resulta))
+        resulta=$(grep -w 'result' $_file_lim | awk {'print $2'})
+        new_m=$(grep -w 'Limite' $_file_lim | awk {'print $2'})
+        new_l=$((new_m+l_old))
         sed -i "/LIMITE_REVENDA/ s/$l_old/$new_l/g" /etc/bot/suspensos/$_rev_usern/$_rev_usern
         sed -i "/\b$_rev_usern\b/ s/LIMITE: $l_old/LIMITE: $new_l/" $ativos
         sed -i "/\b$_rev_usern\b/ s/LIMITE: $l_old/LIMITE: $new_l/" $suspensos
         [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
-            sed -i "/\b$_rev_usern\b/ s/$l_old/$new_l/" /etc/bot/revenda/${message_from_username}/${message_from_username}
+            lim=$(cat /etc/bot/suspensos/${message_from_username}/lim)
+            lim1=$((new_m+lim))
+            sed -i "s;$lim;$lim1;" /etc/bot/suspensos/${message_from_username}/lim
         }
+        echo $new_m  >/tmp/cra-tel
         echo $_rev_usern
     }
+
+
+
 }
 
 fun_dat_rev() {
@@ -1638,39 +1683,82 @@ fun_list_rev() {
     }
     if [[ "${callback_query_from_id[$id]}" == "$id_admin" ]]; then
         local msg1
-        msg1="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n📃 LIST OF RESELLERS !\n=×=×=×=×=×=×=×=×=×=×=×=×=×=\n"
+        echo -e "=×=×=×=×=×=×=×=×=×=×=×=×=×=\n📃 LIST OF RESELLERS !\n=×=×=×=×=×=×=×=×=×=×=×=×=×=\n" >> /tmp/ph
         [[ "$(grep -wc 'revenda' $ativos)" != '0' ]] && {
+            _patch="/etc/bot/revenda"
             while read _atvs; do
                 _uativ="$(echo $_atvs | awk '{print $2}')"
-                [[ "$(grep -wc "$_uativ" $suspensos)" == '0' ]] && _stsrev='ATIVO' || _stsrev='SUSPENSO'
-                msg1+="• @$_uativ - $_stsrev\n"
+                [[ "$(grep -wc "$_uativ" $suspensos)" == '0' ]] && _stsrev='A' || _stsrev='S'
+                lim=$(cat /etc/bot/revenda/$_uativ/lim)
+                l_old=$(grep -w "$_uativ" /etc/bot/lista_ativos | awk {'print $4'})
+                rest=$((l_old-lim))
+                # msg1+="• @$_uativ-$_stsrev 📖\t $lim/$l_old\t   rest=$rest\n"
+                echo -e "@$_uativ-$_stsrev 📖 $lim/$l_old   rest=$rest" >> /tmp/ph
+                # msg1+=" $list_re"
+                while read _listsub; do
+                    _usub1="$(echo $_listsub | awk '{print $2}')"
+                    [[ "$(grep -wc "$_usub1" $suspensos)" != '0' ]] && _usts1='A' || _usts1='S'
+                    lim1=$(cat /etc/bot/revenda/$_usub1/lim)
+                    l_old1=$(grep -w "$_usub1" /etc/bot/lista_ativos | awk {'print $4'})
+                    rest1=$(echo $l_old1-$lim1 |bc)
+                    # msg1+="   • @$_usub1-$_stsrev 📖\t\t\t $lim1/$l_old1\t\t\t   rest=$rest1\n"
+                    [[ "$_usub1" != '' ]] && echo -e "|_ @$_usub1-$_usts1 📖 $lim1/$l_old1   rest=$rest1" >> /tmp/ph
+                done <<<"$(grep -w 'LIMITE_SUBREVENDA' $_patch/$_uativ/$_uativ)"
             done <<<"$(grep -w 'revenda' /etc/bot/lista_ativos)"
+            # echo "$CAD_ARQ" >/tmp/ph
             ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                --text "$(echo -e "$msg1")" \
+                --text "$(cat /tmp/ph)" \
                 --parse_mode html
+            rm /tmp/ph
             return 0
+        
         } || {
             ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "VC DOES NOT HAVE RESELLERS"
+                --text "AD DOES NOT HAVE RESELLERS"
             return 0
         }
     elif [[ "$(grep -w ${callback_query_from_username} $ativos | awk '{print $NF}')" == 'revenda' ]]; then
         _patch="/etc/bot/revenda"
         local msg1
-        msg1="=×=×=×=×=×=×=×=×=×=×=×=×=\n📃 LIST OF SUB RESELLERS !\n=×=×=×=×=×=×=×=×=×=×=×=×=\n"
-        [[ "$(grep -wc "SUBREVENDA" $_patch/${callback_query_from_username}/${callback_query_from_username})" != '0' ]] && {
+        echo -e "=×=×=×=×=×=×=×=×=×=×=×=×=×=×=\n📃 LIST OF SUB RESELLERS !\n=×=×=×=×=×=×=×=×=×=×=×=×=×=×=\n" >> /tmp/ph
+        [[ "$(grep -wc "LIMITE_SUBREVENDA" $_patch/${callback_query_from_username}/${callback_query_from_username})" != '0' ]] && {
             while read _listsub; do
                 _usub="$(echo $_listsub | awk '{print $2}')"
-                [[ "$(grep -wc "$_usub" $suspensos)" == '0' ]] && _usts='ATIVO' || _usts='SUSPENSO'
-                msg1+="• @$_usub - $_usts\n"
-            done <<<"$(grep -w 'SUBREVENDA' $_patch/${callback_query_from_username}/${callback_query_from_username})"
+                [[ "$(grep -wc "$_usub" $suspensos)" != '' ]] && _usts='A' || _usts='S'
+                lim=$(cat /etc/bot/revenda/$_usub/lim)
+                l_old=$(grep -w "$_usub" /etc/bot/lista_ativos | awk {'print $4'})
+                rest=$((l_old-lim))
+                msg1+="@$_usub-$_stsrev 📖 $lim/$l_old rest=$rest"
+                echo -e "@$_usub-$_stsrev 📖 $lim/$l_old   rest=$rest" >> /tmp/ph
+                while read _listsub; do
+                    _usub1="$(echo $_listsub | awk '{print $2}')"
+                    [[ "$(grep -wc "$_usub1" $suspensos)" != '0' ]] && _usts1='A' || _usts1='S'
+                    lim1=$(cat /etc/bot/revenda/$_usub1/lim)
+                    l_old1=$(grep -w "$_usub1" /etc/bot/lista_ativos | awk {'print $4'})
+                    rest1=$(echo $l_old1-$lim1 |bc)
+                    [[ "$_usub1" != '' ]] && echo -e "|_ @$_usub1-$_usts1 📖 $lim1/$l_old1   rest=$rest1" >> /tmp/ph
+                done <<<"$(grep -w 'LIMITE_SUBREVENDA' $_patch/$_uativ/$_uativ)"
+            done <<<"$(grep -w 'LIMITE_SUBREVENDA' $_patch/${callback_query_from_username}/${callback_query_from_username})"
             ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                --text "$(echo -e "$msg1")" \
+                --text "$(cat /tmp/ph)" \
                 --parse_mode html
+            rm /tmp/ph
             return 0
         } || {
             ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "VC DOES NOT HAVE SUB RESELLERS"
+                --text "DOES NOT HAVE SUB RESELLERS"
+            return 0
+            while read _listsub; do
+                _usub="$(echo $_listsub | awk '{print $2}')"
+                [[ "$(grep -wc "$_usub" $suspensos)" != '' ]] && _usts='ATIVO' || _usts='SUSPENSO'
+                lim=$(cat /etc/bot/suspensos/$_usub/lim)
+                l_old=$(grep -w "$_usub" /etc/bot/lista_ativos | awk {'print $4'})
+                rest=$((l_old-lim))
+                msg1+="• @$_usub-$_usts 📖\t\t\t $lim/$l_old\t\t\t   rest=$rest\n"
+            done <<<"$(grep -w 'LIMITE_SUBREVENDA' $_patch/${callback_query_from_username}/${callback_query_from_username})"
+            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
+                --text "$(echo -e "$msg1+")" \
+                --parse_mode html
             return 0
         }
     else
@@ -1678,6 +1766,7 @@ fun_list_rev() {
             --text "🚫 ACESSO NEGADO 🚫"
         return 0
     fi
+return 0
 }
 
 fun_susp_rev() {
@@ -1797,6 +1886,8 @@ fun_menurevenda() {
         return 0
     }
 }
+
+
 
 # LISTA MENU ADMIN
 unset menu1
@@ -2017,7 +2108,7 @@ while :; do
                     # [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
                     #     _limTotal=$(grep -w "${message_from_username}" $ativos | awk '{print $4}')
                     #     fun_verif_limite_rev ${message_from_username}
-                    #     _limsomarev2=$(echo "$_result + ${message_text[$id]}" | bc)
+                    #     _limsomarev2=$(echo "$_result + 1" | bc)
                     #     [[ "$_limsomarev2" -gt "$_limTotal" ]] && {
                     #         _restant1=$(($_limTotal - $_result))
                     #         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -2080,8 +2171,33 @@ while :; do
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
                             --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143" \
                             --parse_mode html
-                        break
+                        # break
                     }
+
+                    [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
+                        lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
+                        l_old=$(grep -w "${message_from_username}" /etc/bot/lista_ativos | awk {'print $4'})
+                        rest=$((l_old-lim))
+                        ShellBot.sendMessage --chat_id $id_admin \
+                            --text "reseller @${message_from_username} create:\n♻️♻️♻️♻️♻️♻️♻️♻️♻️\nHost: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143\nCreadit: $lim/$l_old  rest= $rest " \
+                            --parse_mode html
+                        break
+                            # --parse_mode html
+                    } 
+                    # return 0
+                     usertel=${message_from_username}
+                     [[ $(grep -rnw '/etc/bot/' -e "$usertel LIMITE_SUBREVENDA" | awk -F '/' {'print $5'}) != '' ]] && {
+                        usertel1=$(grep -rnw '/etc/bot/' -e "$usertel LIMITE_SUBREVENDA" | awk -F '/' {'print $5'})
+                        echo $usertel1 >/tmp/usertel1-tel
+                        echo $(grep -w "$usertel1" $tel_id | awk -F ':' {'print $6'}) >/tmp/id-tel
+                        echo $(grep -w "$usertel1" $tel_id | awk -F ':' {'print $2'}) >/tmp/name-tel
+                        # _namet=$(grep -w "$_rev_usern" $tel_id | awk -F ':' {'print $2'})
+                        ShellBot.sendMessage --chat_id $(cat /tmp/id-tel) \
+                            --text "reseller @${message_from_username} create:\n♻️  ♻️  ♻️  ♻️  ♻️\nHost: $host\nUsername: $(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)\nPassword: $(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143\nCreadit: $lim/$l_old  rest= $rest " \
+                            --parse_mode html
+                        rm /tmp/id-tel >/dev/null 2>&1
+                        rm /tmp/name-tel >/dev/null 2>&1
+                     }
                     ;;
                 '📥 AVAILABLE FILES 📥\n\nDo you want to download? Yes or no?:')
                     verifica_acesso
@@ -2224,6 +2340,15 @@ while :; do
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
                         --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CHANGED DATE !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>User:</b> $(cat /tmp/name-d)\n<b>New date:</b> $udata")" \
                         --parse_mode html
+
+                    [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
+                        lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
+                        l_old=$(grep -w "${message_from_username}" /etc/bot/lista_ativos | awk {'print $4'})
+                        rest=$((l_old-lim))
+                        ShellBot.sendMessage --chat_id $id_admin \
+                            --text "reseller ${message_from_username} changed date:\n\n<b>User:</b> $(cat /tmp/name-d)\n<b>New date:</b> $udata\nCreadit: $lim/$l_old  rest= $rest " \
+                            --parse_mode html
+                    } 
                     rm /tmp/name-d >/dev/null 2>&1
                     ;;
                 '[1] - ADICIONAR ARQUIVO\n[2] - EXCLUIR ARQUIVO\n\nInforme a opcao [1-2]:')
@@ -2397,6 +2522,7 @@ while :; do
                         _limTotal=$(grep -w "${message_from_username}" $ativos | awk '{print $4}')
                         fun_verif_limite_rev ${message_from_username}
                         _limsomarev=$(echo "$_result + ${message_text[$id]}" | bc)
+                        echo "$_limsomarev" >$CAD_RES
                         [[ "$_limsomarev" -gt "$_limTotal" ]] && {
                             _restant1=$(($_limTotal - $_result))
                             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -2405,6 +2531,7 @@ while :; do
                             break
                         }
                     }
+                    limnewresel=${message_text[$id]}
                     echo "Limite: ${message_text[$id]}" >>$CAD_ARQ
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
                         --text 'how many days of access:' \
@@ -2479,10 +2606,13 @@ while :; do
                             --parse_mode html
                         break
                     }
+                    # while IFS= read -r Credit
                     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
-                        # _limTotal=$(grep -w "${message_from_username}" $ativos | awk '{print $4}')
-                        # fun_verif_limite_rev ${message_from_username}
-                        # _limsomarev=$(echo "$_result + ${message_text[$id]}" | bc)
+                        _limTotal=$(grep -w "${message_from_username}" $ativos | awk '{print $4}')
+                        fun_verif_limite_rev ${message_from_username}
+                        _limsomarev=$(echo "$_result + ${message_text[$id]}" | bc)
+                        Credit=$((_limTotal-_result))
+                        echo -e "You credit: $Credit" >>$CAD_ARQ
                         [[ $(grep -wc 'SUBREVENDA' /etc/bot/revenda/${message_from_username}/${message_from_username}) != '0' ]] && {
                             _limsomarev2=$(echo "$(grep -w 'SUBREVENDA' /etc/bot/revenda/${message_from_username}/${message_from_username} | awk {'print $4'} | paste -s -d + | bc)" + "${message_text[$id]}" | bc)
                         } || {
@@ -2504,12 +2634,17 @@ while :; do
                         }
                     }
                     echo -e "Limite: ${message_text[$id]}" >>$CAD_ARQ
-                    # echo -e "Limitotal: $_limsomarev" >>$CAD_ARQ
-                    # echo -e "result: $_result" >>$CAD_ARQ
                     lim_rev $CAD_ARQ
+                    id_change $CAD_ARQ
+
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ RESALE LIMIT CHANGED !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n$(<$CAD_ARQ)")" \
+                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ RESALE LIMIT CHANGED !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n$(<$CAD_ARQ)\n\nYour credit: $Credit")" \
                         --parse_mode html
+
+
+
+
+
                     # ALTERAR DATA
                     ;;
                 '📆 CHANGE RESALE DATE 📆\n\nInform his user [Ex: @sibatrow]:')
