@@ -8,7 +8,7 @@ echo ""
 echo ""
 echo -e "\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m◇ \033[1;33mMonitor Online User  \033[1;31m           [\033[1;36m2\033[1;31m] \033[1;37m◇ \033[1;33mMonitor All User \033[1;31m"
 echo ""
-echo -e "\033[0;34m◇───────────────────────────────────────────────◇\033[0m"
+echo -e "\033[0;34m◇───────────────────────────────────────────────────────────◇\033[0m"
 echo ""
 read -p "$(echo -e "\033[1;32mWHAT DO YOU WANT TO DO\033[1;31m ?\033[1;37m : ")" -e -i 1 x
 # echo -ne "\033[1;32m◇ WHAT DO YOU WANT TO DO \033[1;33m?\033[1;31m?\033[1;37m : "; read x
@@ -119,7 +119,7 @@ case "$x" in
                status=$(echo -e "\033[1;32mOnline\033[1;33m         ")
                echo -ne "\033[1;33m"
                printf '%-17s%-14s%-17s%-17s%-39s%-15s%s\n' " $user"  "$status" "$timerr"  "$ip" "$city/$city2"  "$isp"
-               echo -e "\033[0;34m◇────────────────────────────────────────────────────────────────────────────◇\033[0m"
+               echo -e "\033[0;34m◇────────────────────────────────────────────────────────────────────────────────────────◇\033[0m"
             fi
            
         done < "$database"
@@ -225,16 +225,25 @@ case "$x" in
             else
               timerr="00:00:00"
             fi
+            passwd -S $user >> /tmp/templ.txt
+            [[ $(awk -F" " '{print $2}' /tmp/templ.txt) == "L" ]] && {
+              Locks=$(echo -e "\033[1;31mLocked\033[1;33m") 
+              } || {
+              Locks=$(echo -e "\033[1;32mUnLocked\033[1;33m") 
+              
+            }
+            rm /tmp/templ.txt
+
             if [[ $conex -eq 0 ]]; then
                status=$(echo -e "\033[1;31mOffline \033[1;33m       ")
                echo -ne "\033[1;33m"
-               printf '%-17s%-14s%-13s%-15s%s\n' " $user"  "$status"  "$conex/$s2ssh"  "$timerr"  "$ip"  "isp"
+               printf '%-17s%-10s%-13s%-15s%-15s%-15s%s\n' " $user"  "$status"  "$conex/$s2ssh"  "$timerr"  "$ip"    "$Locks"
             else
                status=$(echo -e "\033[1;32mOnline\033[1;33m         ")
                echo -ne "\033[1;33m"
-               printf '%-17s%-14s%-13s%-15s%s\n' " $user"  "$status"  "$conex/$s2ssh"  "$timerr"  "$ip"  "isp"
+               printf '%-17s%-10s%-13s%-15s%-15s%-15s%s\n' " $user"  "$status"  "$conex/$s2ssh"  "$timerr"  "$ip"    "$Locks"
             fi
-            echo -e "\033[0;34m◇────────────────────────────────────────────────────────────────────────────◇\033[0m"
+            echo -e "\033[0;34m◇────────────────────────────────────────────────────────────────────────────────────────◇\033[0m"
         done < "$database"
     fi
     #exit
