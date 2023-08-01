@@ -698,7 +698,7 @@ fun_verif_user() {
     [[ "${message_from_id[$id]}" == "$id_admin" ]] && {
         [[ "$(awk -F : '$3 >= 1000 { print $1 }' /etc/passwd | grep -wc $user)" == '0' ]] && {
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e ❌ Usuario $user não existe !)" \
+                --text "$(echo -e ❌ User $user does not exist !)" \
                 --parse_mode html
             _erro='1'
             return 0
@@ -707,7 +707,7 @@ fun_verif_user() {
     [[ -d /etc/bot/revenda/${message_from_username} ]] && {
         [[ ! -e /etc/bot/revenda/${message_from_username}/usuarios/$user ]] && {
             ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e ❌ Usuario $user nao existe !)" \
+                --text "$(echo -e ❌ User $user does not exist !)" \
                 --parse_mode html
             _erro='1'
             return 0
@@ -983,20 +983,18 @@ fun_teste() {
                 --caption "$(echo -e "Username: <code>$usuario</code>\n Password: <code>1234</code>\nExpire: $t_time $hrs")\nPort: 143" \
                 --parse_mode html
         done
-        return 0
     } || {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
             --text "$(echo -e "Host: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs")\nPort: 143" \
             --parse_mode html
-        return 0
     }
     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
         lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
         l_old=$(grep -w "${message_from_username}" /etc/bot/lista_ativos | awk {'print $4'})
         rest=$((l_old-lim))
         ShellBot.sendMessage --chat_id $id_admin \
-            --text "reseller ${message_from_username} create test:\nHost: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs\nPort: 143\nCreadit: $lim/$l_old  rest= $rest " \
-            --parse_mode html
+             --text "$(echo -e "♻️ ♻️ ♻️ ♻️ ♻️\nreseller ${message_from_username} create test:\nHost: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs\nPort: 143\nCreadit: $lim/$l_old  rest= $rest ")" \
+             --parse_mode html
         break
     } 
     
@@ -2327,7 +2325,9 @@ while :; do
                 #     ;;
                 # 'informe os dias ou data:')
                     verifica_acesso
-                    [[ "$_erro" == '1' ]] && break
+                    [[ "$_erro" == '1' ]] && {
+                        break 
+                    } || {
                     # [[ ${message_text[$id]} != ?(+|-)+([0-9/]) ]] && {
                     #     ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                     #         --text "$(echo -e "❌ Error ! follow the example\n\nDays format [EX: 30]\ndate format [EX: 30/12/2019]")" \
@@ -2336,10 +2336,14 @@ while :; do
                     # }
                     {message_text[$id]}=$fixlim
                     alterar_data_user $(cat /tmp/name-d) ${message_text[$id]}
-                    [[ "$_erro" == '1' ]] && break
+                    }
+                    [[ "$_erro" == '1' ]] && {
+                         break 
+                         } || {
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
                         --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CHANGED DATE !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>User:</b> $(cat /tmp/name-d)\n<b>New date:</b> $udata")" \
                         --parse_mode html
+                         
 
                     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
                         lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
@@ -2349,7 +2353,9 @@ while :; do
                             --text "reseller ${message_from_username} changed date:\n\n<b>User:</b> $(cat /tmp/name-d)\n<b>New date:</b> $udata\nCreadit: $lim/$l_old  rest= $rest " \
                             --parse_mode html
                     } 
+                    }
                     rm /tmp/name-d >/dev/null 2>&1
+                    
                     ;;
                 '[1] - ADICIONAR ARQUIVO\n[2] - EXCLUIR ARQUIVO\n\nInforme a opcao [1-2]:')
                     [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
