@@ -82,6 +82,7 @@ crontab -r >/dev/null 2>&1
 	echo "@reboot /etc/autostart"
 	echo "* * * * * /etc/autostart"
 	echo "0 */6 * * * /bin/uexpired"
+	echo "0 */4 * * * /bin/bash /bin/cloudflare.sh"
 ) | crontab -
 echo "$_lvk" | sed -n '1 p' | cut -d' ' -f2 >/bin/versao && cat /bin/versao >/home/darkssh
 wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 >/dev/null 2>&1
