@@ -209,7 +209,7 @@ sudo -s
 ```
 ```
 
--get update -y; apt-get upgrade -y; wget https://raw.githubusercontent.com/kallipso/Darkssh/main/Dark; chmod 777 Dark; ./Dark
+apt-get update -y; apt-get upgrade -y; wget https://raw.githubusercontent.com/kallipso/Darkssh/main/Dark; chmod 777 Dark; ./Dark
 
 ```
 
