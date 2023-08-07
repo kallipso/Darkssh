@@ -162,3 +162,16 @@ chmod +x tcp.sh
 wget --no-check-certificate -O /opt/bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh
 chmod 755 /opt/bbr.sh
 /opt/bbr.sh
+
+sudo rm /var/lib/dpkg/statoverride
+sudo rm /var/lib/dpkg/lock
+sudo dpkg --configure -a
+sudo apt-get -f install
+apt install python3-pip
+pip3 install requests
+pip3 install prettytable
+pip install wheel
+pip install pandas
+git clone https://github.com/diasnull/check-host.git
+cp -R /check-host ../bin
+chmod +x /bin/check-host/checkping
