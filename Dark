@@ -173,5 +173,5 @@ pip3 install -y prettytable
 pip install -y wheel
 pip install -y pandas
 git clone https://github.com/diasnull/check-host.git
-cp -R /check-host ../bin
+cp -R check-host ../bin
 chmod +x /bin/check-host/checkping
