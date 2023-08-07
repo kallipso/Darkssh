@@ -1,15 +1,15 @@
 #!/bin/bash
 ## change to "bin/sh" when necessary
-TELEGRAM_TOKEN="6285447624:AAEZHa-uNXyeLr8SQyf7HCGggEKBVnIayqM"
-CHAT_ID="6207487369"
-auth_email="bigfoot2pass@gmail.com"                                       # The email used to login 'https://dash.cloudflare.com'
+TELEGRAM_TOKEN=""
+CHAT_ID=""
+auth_email=""                                       # The email used to login 'https://dash.cloudflare.com'
 auth_method="global"                                 # Set to "global" for Global API Key or "token" for Scoped API Token
-auth_key="6e2b7412ce3aa0d9d1cf6e8bccf2032cb7c1e"                                         # Your API Token or Global API Key
-zone_identifier="01413e7e0a1337ad1090cf51b93113bb"                                  # Can be found in the "Overview" tab of your domain
-record_name="ito2.net"                                      # Which record you want to be synced
+auth_key=""                                         # Your API Token or Global API Key
+zone_identifier=""                                  # Can be found in the "Overview" tab of your domain
+record_name=""                                      # Which record you want to be synced
 ttl="300"                                          # Set the DNS TTL (seconds)
 proxy="false"     
-ip="159.69.101.209"
+ip=""
 
 
 python3 /bin/check-host/check-host.py --ping -t ito2.net>/bin/check-host/test
