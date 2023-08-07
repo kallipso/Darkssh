@@ -1,0 +1,110 @@
+#!/bin/bash
+## change to "bin/sh" when necessary
+TELEGRAM_TOKEN="6285447624:AAEZHa-uNXyeLr8SQyf7HCGggEKBVnIayqM"
+CHAT_ID="6207487369"
+auth_email="bigfoot2pass@gmail.com"                                       # The email used to login 'https://dash.cloudflare.com'
+auth_method="global"                                 # Set to "global" for Global API Key or "token" for Scoped API Token
+auth_key="6e2b7412ce3aa0d9d1cf6e8bccf2032cb7c1e"                                         # Your API Token or Global API Key
+zone_identifier="01413e7e0a1337ad1090cf51b93113bb"                                  # Can be found in the "Overview" tab of your domain
+record_name="ito2.net"                                      # Which record you want to be synced
+ttl="300"                                          # Set the DNS TTL (seconds)
+proxy="false"     
+ip="159.69.101.209"
+
+
+python3 /bin/check-host/check-host.py --ping -t ito2.net>/bin/check-host/test
+time=$(date +"%T")
+mytehran() {
+    echo "$(grep -w 'Tehran' /bin/check-host/test | awk -F "/" '{print $5}' )"
+}
+
+Tehran="$(mytehran)"
+
+myshiraz() {
+    echo "$(grep -w 'Shiraz' /bin/check-host/test | awk -F "/" '{print $5}' )"
+}
+
+Shiraz="$(myshiraz)"
+
+mytabriz() {
+    echo "$(grep -w 'Tabriz' /bin/check-host/test | awk -F "/" '{print $5}' )"
+}
+
+Tabriz="$(mytabriz)"
+
+export checkpi
+checkpi=0
+echo "$Tehran"
+if [[ "$Tehran" != "OK" ]]; then
+echo "tehran is zero"
+MESSAGE=" Tehran ping is zero at $time"
+curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$CHAT_ID" -d text="$MESSAGE" > /d$
+((checkpi++))
+fi
+
+if [[ "$Shiraz" != "OK" ]]; then
+
+
+MESSAGE=" Shiraz ping is zero at $time"
+curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$CHAT_ID" -d text="$MESSAGE" > /d$
+((checkpi++))
+fi
+if [[ "$Tabriz" != "OK" ]]; then
+
+MESSAGE=" Tabriz ping is zero at $time"
+curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$CHAT_ID" -d text="$MESSAGE" > /d$
+
+((checkpi++))
+fi
+
+if [[ "$checkpi" -gt "2" ]]; then
+
+    MESSAGE=" change ip at $time"
+    curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$CHAT_ID" -d text="$MESSAGE" > /d$
+
+    #sudo ip addr add $ip dev eth0
+    #========================================
+
+
+
+    if [[ "${auth_method}" == "global" ]]; then
+    auth_header="X-Auth-Key:"
+    else
+    auth_header="Authorization: Bearer"
+    fi
+    logger "DDNS Updater: Check Initiated"
+   # record=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?type=A&name=$record_name" \
+   #                     -H "X-Auth-Email: $auth_email" \
+   #                     -H "$auth_header $auth_key" \
+   #                     -H "Content-Type: application/json")
+
+    ###########################################
+    ## Check if the domain has an A record
+    ###########################################
+    if [[ $record == *"\"count\":0"* ]]; then
+    logger -s "DDNS Updater: Record does not exist, perhaps create one first? (${ip} for ${record_name})"
+    exit 1
+    fi
+
+    record_identifier=$(echo "$record" | sed -E 's/.*"id":"(\w+)".*/\1/')
+
+    ###########################################
+    ## Change the IP@Cloudflare using the API
+    ###########################################
+    # update=$(curl -s -X PATCH "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
+    #                     -H "X-Auth-Email: $auth_email" \
+    #                     -H "$auth_header $auth_key" \
+    #                     -H "Content-Type: application/json" \
+    #                     --data "{\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\",\"ttl\":\"$ttl\",\"proxied\":${proxy}}")
+
+
+
+
+else
+    MESSAGE=" ip is ok $Tehran $Shiraz $Tabriz $checkpi"
+    curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$CHAT_ID" -d text="$MESSAGE" > /d$
+    echo  "$Tehran-$Shiraz-$Tabriz-$checkpi"
+fi
+
+
+
