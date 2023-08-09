@@ -9,6 +9,7 @@
 #===================================================
 [[ ! -d /etc/DARKssh ]] && exit 0
 [[ ! -d /etc/bot ]] && exit 0
+source ../bin/cloudflare.sh
 source ShellBot.sh
 api_bot=$1
 id_admin=$2
@@ -158,6 +159,11 @@ fun_ajuda() {
     fi
 }
 
+fun_cloudflare() {
+
+    /bin/bash /bin/cloudflare.sh
+    return 0
+}
 verifica_acesso() {
     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
         [[ "$(grep -wc ${message_from_username} $suspensos)" != '0' ]] || [[ "$(grep -wc ${message_from_username} $ativos)" == '0' ]] && {
@@ -1908,6 +1914,7 @@ ShellBot.InlineKeyboardButton --button 'menu1' --line 6 --text 'USERS BACKUP' --
 ShellBot.InlineKeyboardButton --button 'menu1' --line 7 --text "HIGH BACKUP" --callback_data '_autobkp'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 8 --text 'REPORT' --callback_data '_relatorio'
 ShellBot.InlineKeyboardButton --button 'menu1' --line 9 --text 'HELP' --callback_data '_ajuda'
+ShellBot.InlineKeyboardButton --button 'menu1' --line 10 --text 'Cloudflare' --callback_data '_cloudflare'
 ShellBot.regHandleFunction --function fun_adduser --callback_data _criaruser
 ShellBot.regHandleFunction --function fun_add_teste --callback_data _criarteste
 ShellBot.regHandleFunction --function fun_deluser --callback_data _deluser
@@ -1925,6 +1932,7 @@ ShellBot.regHandleFunction --function backup_users --callback_data _backupusers
 ShellBot.regHandleFunction --function fun_backauto --callback_data _autobkp
 ShellBot.regHandleFunction --function relatorio_rev --callback_data _relatorio
 ShellBot.regHandleFunction --function fun_ajuda --callback_data _ajuda
+ShellBot.regHandleFunction --function fun_cloudflare --callback_data _cloudflare
 ShellBot.regHandleFunction --function fun_menurevenda --callback_data _opcoesrev
 unset keyboard1
 keyboard1="$(ShellBot.InlineKeyboardMarkup -b 'menu1')"
