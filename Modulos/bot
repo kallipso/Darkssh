@@ -1680,6 +1680,7 @@ dat_rev() {
 }
 
 fun_list_rev() {
+    rm /tmp/ph
     [[ "$(grep -wc ${callback_query_from_username} $suspensos)" != '0' ]] && {
         ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
             --text "⚠️ YOU ARE SUSPENDED! CONTACT THE ADMINISTRATOR"
