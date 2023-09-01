@@ -2053,14 +2053,16 @@ while :; do
                             --text "$(echo -e "❌ Error! INVALID USER ❌\n\n⚠️ Enter Another Name..")" \
                             --parse_mode html
                         >$CAD_ARQ
-                        break
+                        exit 0
+                        break 2
                     }
                     [ "${message_text[$id]}" == 'root' ] && {
                         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                             --text "$(echo -e "❌ ERROR! INVALID USER ❌\n\n⚠️ Enter Another Name..")" \
                             --parse_mode html
                         >$CAD_ARQ
-                        break
+                        exit 0
+                        break 2
                     }
                     sizemin=$(echo -e ${#message_text[$id]})
                     [[ "$sizemin" -lt '4' ]] && {
@@ -2068,7 +2070,8 @@ while :; do
                             --text "$(echo -e "❌ Error !\n\nUse at least 4 characters\n[EX: sithum]")" \
                             --parse_mode html
                         >$CAD_ARQ
-                        break
+                        exit 0
+                        break 2
                     }
                     sizemax=$(echo -e ${#message_text[$id]})
                     [[ "$sizemax" -gt '10' ]] && {
@@ -2076,7 +2079,8 @@ while :; do
                             --text "$(echo -e "❌ Error !\n\nUse a maximum of 8 characters\n[EX: sbatrow]")" \
                             --parse_mode html
                         >$CAD_ARQ
-                        break
+                        exit 0
+                        break 2
                     }
                     echo "Nome: ${message_text[$id]}" >$CAD_ARQ
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
@@ -2086,12 +2090,13 @@ while :; do
                 'Password:')
                     sizepass=$(echo -e ${#message_text[$id]})
                     verifica_acesso
-                    [[ "$_erro" == '1' ]] && break
+                    [[ "$_erro" == '1' ]] && exit 0
                     [[ "$sizepass" -lt '4' ]] && {
                         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                             --text "$(echo -e "❌ Error !\n\nUse at least 4 characters\n[EX: sithum]")" \
                             --parse_mode html
                         >$CAD_ARQ
+                        exit 0
                         break
                     }
                     echo "Senha: ${message_text[$id]}" >>$CAD_ARQ
@@ -2104,7 +2109,7 @@ while :; do
                 # 'Limite:')
                     verifica_acesso
                     Limite=1
-                    [[ "$_erro" == '1' ]] && break
+                    [[ "$_erro" == '1' ]] && break 2
                     # [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
                     #     ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
                     #         --text "$(echo -e "❌ Error ! \n\nUse only numbers [EX: 1]")" \
@@ -2136,9 +2141,11 @@ while :; do
                                 --text "$(echo -e "❌ You don't have enough limit\n\nAvailable limit: $_restant1 ")" \
                                 --parse_mode html
                             >$CAD_ARQ
-                            break
+                            exit 0
+                            break 2
                         }
-                    }
+                    } || {
+
                     echo "Limite: $Limite" >>$CAD_ARQ
                     # Próximo campo.
                     # ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
@@ -2165,7 +2172,8 @@ while :; do
                             --text "$(echo -e ❌ Erro ao criar usuario !)" \
                             --parse_mode html
                         >$CAD_ARQ
-                        break
+                        exit 0
+                        break 2
                     }
                     lim=$(cat /etc/bot/revenda/${message_from_username}/lim)
                     lim1=$(echo $lim + 1 | bc)
@@ -2205,6 +2213,7 @@ while :; do
                         rm /tmp/id-tel >/dev/null 2>&1
                         rm /tmp/name-tel >/dev/null 2>&1
                      }
+                    }
                     ;;
                 '📥 AVAILABLE FILES 📥\n\nDo you want to download? Yes or no?:')
                     verifica_acesso
@@ -2350,7 +2359,7 @@ while :; do
                          break 
                          } || {
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CHANGED DATE !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\n\n<b>User:</b> $(cat /tmp/name-d)\n<b>New date:</b> $udata")" \
+                        --text "$(echo -e "=×=×=×=×=×=×=×=×=×=×=×\n<b>✅ CHANGED DATE !</b> !\n=×=×=×=×=×=×=×=×=×=×=×\nHost: $host\n\n<b>User:</b> $(cat /tmp/name-d)\n<b>New date:</b> $udata")" \
                         --parse_mode html
                          
 
