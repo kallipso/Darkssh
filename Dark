@@ -175,3 +175,4 @@ pip install pandas
 git clone https://github.com/kallipso/check-host.git
 cp -R check-host ../bin
 chmod +x /bin/check-host/checkping
+wget "https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh" -O linux-optimizer.sh && chmod +x linux-optimizer.sh && bash linux-optimizer.sh 
