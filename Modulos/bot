@@ -14,6 +14,7 @@ source ShellBot.sh
 api_bot=$1
 id_admin=$2
 host="ito2.net"
+inputdate=31
 [[ -z $api_bot ]] && exit 0
 [[ -z $id_admin ]] && exit 0
 [[ ! -e /usr/lib/licence ]] && exit 0
@@ -416,7 +417,6 @@ alterar_data() {
 
 alterar_data_user() {
     usuario=$1
-    inputdate=30
     # udata=$30
     database="/root/usuarios.db"
     [[ "$(echo -e "$inputdate" | sed -e 's/[^/]//ig')" != '//' ]] && {
@@ -2163,7 +2163,6 @@ while :; do
                     #     >$CAD_ARQ
                     #     break
                     # }
-                    inputdate=30
                     info_data=$(date '+%d/%m/%C%y' -d " +$inputdate days")
                     echo "Validade: $info_data" >>$CAD_ARQ
                     criar_user $CAD_ARQ
@@ -2332,7 +2331,6 @@ while :; do
                     ;;
                 '⏳ Change Date ⏳\n\nUsername:')
                     verifica_acesso
-                    fixlim=30
                     [[ "$_erro" == '1' ]] && break
                     fun_verif_user ${message_text[$id]}
                     [[ "$_erro" == '1' ]] && breakcat
@@ -2352,7 +2350,7 @@ while :; do
                     #         --parse_mode html
                     #     break
                     # }
-                    {message_text[$id]}=$fixlim
+                    {message_text[$id]}=$inputdate
                     alterar_data_user $(cat /tmp/name-d) ${message_text[$id]}
                     }
                     [[ "$_erro" == '1' ]] && {
