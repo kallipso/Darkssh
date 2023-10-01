@@ -13,7 +13,7 @@ source ../bin/cloudflare.sh
 source ShellBot.sh
 api_bot=$1
 id_admin=$2
-host="ito2.net"
+host="XHost"
 inputdate=31
 [[ -z $api_bot ]] && exit 0
 [[ -z $id_admin ]] && exit 0
