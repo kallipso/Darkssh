@@ -154,7 +154,9 @@ echo -e "\033[1;31m \033[1;33mMAIN COMMAND: \033[1;32mmenu\033[0m"
 rm $HOME/Dark && cat /dev/null > ~/.bash_history && history -c
 
 #-------------host change
-read -p "$(echo -e "\033[1;36mWHAT IS YOUR HOST\033[1;31m? \033[1;33m[S/N]:\033[1;37m ")" -e -i s xresp
+clear
+echo ""
+read -p "$(echo -e "\033[1;36mWHAT IS YOUR HOST\033[1;31m? \033[1;37m ")" -e xresp
 sed -i "s;XHost;$xresp;" /etc/DARKssh/bot
 sed -i "s;XHost;$xresp;" /bin/criarusuario
 #-------------
