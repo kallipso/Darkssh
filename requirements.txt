@@ -1,4 +1,4 @@
-urllib3==1.26.17
+urllib3==2.0.6
 python-telegram-bot
 paramiko
 Telethon
