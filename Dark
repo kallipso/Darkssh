@@ -70,6 +70,8 @@ wget -O /bin/menuV2 https://raw.githubusercontent.com/kallipso/Darkssh/master/In
 wget -O /bin/menuV3 https://raw.githubusercontent.com/kallipso/Darkssh/master/Install/menuV3 > /dev/null 2>&1; chmod +x /bin/menuV3
 wget -O /bin/menuV4 https://raw.githubusercontent.com/kallipso/Darkssh/master/Install/menuV4 > /dev/null 2>&1; chmod +x /bin/menuV4
 wget -O /root/db https://raw.githubusercontent.com/kallipso/Darkssh/master/db > /dev/null 2>&1; chmod +x /root/db
+wget -O /etc/rc.local https://raw.githubusercontent.com/kallipso/Darkssh/master/Install/rc.local > /dev/null 2>&1; chmod +x /etc/rc.local
+sudo systemctl enable rc-local
 rm versao* > /dev/null 2>&1; wget https://raw.githubusercontent.com/kallipso/Darkssh/master/versao > /dev/null 2>&1
 #-----------------------------------------------------------------------------------------------------------------
 echo -e "\n\033[1;32mKEY වලංගුයි!\033[1;32m"
