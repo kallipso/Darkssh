@@ -11,7 +11,7 @@
 #
 # By default this script does nothing.
 
-sudo screen -dmS "netlog" bash -c "nethogs"
+sudo screen -dmS "netlog" bash -c "nethogs -v 3"
 
 exit 0
 
