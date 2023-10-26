@@ -170,9 +170,12 @@ apt install git -y && git clone https://github.com/rajkumardusad/IP-Tracer.git &
 wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
 chmod +x tcp.sh
 ./tcp.sh
-wget --no-check-certificate -O /opt/bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh
-chmod 755 /opt/bbr.sh
-/opt/bbr.sh
+#wget --no-check-certificate -O /opt/bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh
+#chmod 755 /opt/bbr.sh
+#/opt/bbr.sh
+
+
+
 
 sudo rm /var/lib/dpkg/statoverride
 sudo rm /var/lib/dpkg/lock
@@ -187,3 +190,5 @@ git clone https://github.com/kallipso/check-host.git && cp -R check-host ../bin 
 wget "https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh" -O linux-optimizer.sh && chmod +x linux-optimizer.sh && bash linux-optimizer.sh 
 bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Nethogs-Json/main/install.sh --ipv4)
 mkdir ssh-monitoring && echo 'nethogs -v 3 -d 1800 -at | grep "sshd:"' > monitoring.sh && chmod 750 monitoring.sh && stdbuf -oL ~/monitoring.sh >ssh-monitoring/monitoring-'date+%F'.log
+
+apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
