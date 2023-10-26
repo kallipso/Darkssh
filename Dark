@@ -191,4 +191,6 @@ wget "https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-opti
 bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Nethogs-Json/main/install.sh --ipv4)
 mkdir ssh-monitoring && echo 'nethogs -v 3 -d 1800 -at | grep "sshd:"' > monitoring.sh && chmod 750 monitoring.sh && stdbuf -oL ~/monitoring.sh >ssh-monitoring/monitoring-'date+%F'.log
 
-apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
+bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/bbrv3.sh --ipv4)
+
+
