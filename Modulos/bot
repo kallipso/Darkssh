@@ -14,6 +14,7 @@ source ShellBot.sh
 api_bot=$1
 id_admin=$2
 host="XHost"
+porti="110"
 inputdate=31
 [[ -z $api_bot ]] && exit 0
 [[ -z $id_admin ]] && exit 0
@@ -809,7 +810,7 @@ fun_download() {
     echo $_file2
     ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
         --document "@/etc/bot/arquivos/$_file" \
-        --caption "$(echo -e "Username: <code>$(awk -F " " '/Nome/ {print $2}' $_file2)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $_file2)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $_file2)\nExpire: $(awk -F " " '/Validade/ {print $2}' $_file2)Port: 143")" \
+        --caption "$(echo -e "Username: <code>$(awk -F " " '/Nome/ {print $2}' $_file2)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $_file2)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $_file2)\nExpire: $(awk -F " " '/Validade/ {print $2}' $_file2)Port: $porti")" \
         --parse_mode html
     [[ -e "/root/$(awk -F " " '/Nome/ {print $2}' $_file2).ovpn" ]] && {
         ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
@@ -986,12 +987,12 @@ fun_teste() {
         for arqv in $(ls /etc/bot/arquivos); do
             ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
                 --document "@/etc/bot/arquivos/$arqv" \
-                --caption "$(echo -e "Username: <code>$usuario</code>\n Password: <code>1234</code>\nExpire: $t_time $hrs")\nPort: 143" \
+                --caption "$(echo -e "Username: <code>$usuario</code>\n Password: <code>1234</code>\nExpire: $t_time $hrs")\nPort: $porti" \
                 --parse_mode html
         done
     } || {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "Host: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs")\nPort: 143" \
+            --text "$(echo -e "Host: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs")\nPort: $porti" \
             --parse_mode html
     }
     [[ "${message_from_id[$id]}" != "$id_admin" ]] && {
@@ -999,7 +1000,7 @@ fun_teste() {
         l_old=$(grep -w "${message_from_username}" /etc/bot/lista_ativos | awk {'print $4'})
         rest=$((l_old-lim))
         ShellBot.sendMessage --chat_id $id_admin \
-             --text "$(echo -e "♻️ ♻️ ♻️ ♻️ ♻️\nreseller ${message_from_username} create test:\nHost: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs\nPort: 143\nCreadit: $lim/$l_old  rest= $rest ")" \
+             --text "$(echo -e "♻️ ♻️ ♻️ ♻️ ♻️\nreseller ${message_from_username} create test:\nHost: $host\nUsername: <code>$usuario</code>\nPassword: <code>1234</code>\nExpire: $t_time $hrs\nPort: $porti\nCreadit: $lim/$l_old  rest= $rest ")" \
              --parse_mode html
         break
     } 
@@ -2179,11 +2180,11 @@ while :; do
                     sed -i "s;$lim;$lim1;" /etc/bot/revenda/${message_from_username}/lim                    
                     [[ "$(ls /etc/bot/arquivos | wc -l)" != '0' ]] && {
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143" \
+                            --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: $porti" \
                             --reply_markup "$(ShellBot.ForceReply)"
                     } || {
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143" \
+                            --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: $porti" \
                             --parse_mode html
                         # break
                     }
@@ -2193,7 +2194,7 @@ while :; do
                         l_old=$(grep -w "${message_from_username}" /etc/bot/lista_ativos | awk {'print $4'})
                         rest=$((l_old-lim))
                         ShellBot.sendMessage --chat_id $id_admin \
-                            --text "reseller @${message_from_username} create:\n♻️♻️♻️♻️♻️♻️♻️♻️♻️\nHost: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143\nCreadit: $lim/$l_old  rest= $rest " \
+                            --text "reseller @${message_from_username} create:\n♻️♻️♻️♻️♻️♻️♻️♻️♻️\nHost: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: $porti\nCreadit: $lim/$l_old  rest= $rest " \
                             --parse_mode html
                         break
                             # --parse_mode html
@@ -2207,7 +2208,7 @@ while :; do
                         echo $(grep -w "$usertel1" $tel_id | awk -F ':' {'print $2'}) >/tmp/name-tel
                         # _namet=$(grep -w "$_rev_usern" $tel_id | awk -F ':' {'print $2'})
                         ShellBot.sendMessage --chat_id $(cat /tmp/id-tel) \
-                            --text "reseller @${message_from_username} create:\n♻️  ♻️  ♻️  ♻️  ♻️\nHost: $host\nUsername: $(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)\nPassword: $(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143\nCreadit: $lim/$l_old  rest= $rest " \
+                            --text "reseller @${message_from_username} create:\n♻️  ♻️  ♻️  ♻️  ♻️\nHost: $host\nUsername: $(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)\nPassword: $(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: $porti\nCreadit: $lim/$l_old  rest= $rest " \
                             --parse_mode html
                         rm /tmp/id-tel >/dev/null 2>&1
                         rm /tmp/name-tel >/dev/null 2>&1
@@ -2222,7 +2223,7 @@ while :; do
                             --text "$(echo -e "❌ Invalid option ❌\n\n⚠️ Use only letters [EX: sithum batrow]")" \
                             --parse_mode html
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: 143\n" \
+                            --text "Host: $host\nUsername: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nPassword: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLimit: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nExpire: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)\nPort: $porti\n" \
                             --parse_mode html
                         break
                     }
@@ -2766,4 +2767,3 @@ while :; do
     done
 done
 #FIM
-
