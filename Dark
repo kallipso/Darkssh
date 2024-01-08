@@ -165,7 +165,7 @@ sed -i "s;XHost;$xresp;" /bin/criarusuario
 
 apt install git -y && git clone https://github.com/rajkumardusad/IP-Tracer.git && cd IP-Tracer && chmod +x install && ./install
 
- bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/block-iran.sh --ipv4)
+bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/block-iran.sh --ipv4)
 
 wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
 chmod +x tcp.sh
@@ -177,20 +177,20 @@ chmod +x tcp.sh
 
 
 
-sudo rm /var/lib/dpkg/statoverride
-sudo rm /var/lib/dpkg/lock
-sudo dpkg --configure -a
-sudo apt-get -f install
-apt install -y python3-pip
-pip3 install requests
-pip3 install prettytable
-pip install wheel
-pip install pandas
-git clone https://github.com/kallipso/check-host.git && cp -R check-host ../bin && chmod +x /bin/check-host/checkping
-wget "https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh" -O linux-optimizer.sh && chmod +x linux-optimizer.sh && bash linux-optimizer.sh 
-bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Nethogs-Json/main/install.sh --ipv4)
-mkdir ssh-monitoring && echo 'nethogs -v 3 -d 1800 -at | grep "sshd:"' > monitoring.sh && chmod 750 monitoring.sh && stdbuf -oL ~/monitoring.sh >ssh-monitoring/monitoring-'date+%F'.log
+#sudo rm /var/lib/dpkg/statoverride
+#sudo rm /var/lib/dpkg/lock
+#sudo dpkg --configure -a
+#sudo apt-get -f install
+#apt install -y python3-pip
+#pip3 install requests
+#pip3 install prettytable
+#pip install wheel
+#pip install pandas
+#git clone https://github.com/kallipso/check-host.git && cp -R check-host ../bin && chmod +x /bin/check-host/checkping
+#wget "https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh" -O linux-optimizer.sh && chmod +x linux-optimizer.sh && bash linux-optimizer.sh 
+#bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Nethogs-Json/main/install.sh --ipv4)
+#mkdir ssh-monitoring && echo 'nethogs -v 3 -d 1800 -at | grep "sshd:"' > monitoring.sh && chmod 750 monitoring.sh && stdbuf -oL ~/monitoring.sh >ssh-monitoring/monitoring-'date+%F'.log
 
-bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/bbrv3.sh --ipv4)
+#bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/bbrv3.sh --ipv4)
 
 
