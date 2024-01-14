@@ -165,7 +165,7 @@ sed -i "s;XHost;$xresp;" /bin/criarusuario
 
 apt install git -y && git clone https://github.com/rajkumardusad/IP-Tracer.git && cd IP-Tracer && chmod +x install && ./install
 
-#bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/block-iran.sh --ipv4)
+bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/block-iran.sh --ipv4)
 
 wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
 chmod +x tcp.sh
