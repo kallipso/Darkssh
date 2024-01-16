@@ -93,4 +93,4 @@ service ssh restart >/dev/null 2>&1
 [[ -d /var/www/html/openvpn ]] && service apache2 restart >/dev/null 2>&1
 rm -rf $lst1/list >/dev/null 2>&1
 touch /etc/bot/tel_id && chmod +x /etc/bot/tel_id
-echo "ps x | grep 'monitoring' | grep -v 'grep' && echo 'ON' || sudo screen -dmS "netlog" bash -c "stdbuf -oL monitoring.sh>ssh-monitoring/monitoring-$(date '+%F').log" && cd /root">>../etc/autostart
+#echo "ps x | grep 'monitoring' | grep -v 'grep' && echo 'ON' || sudo screen -dmS "netlog" bash -c "stdbuf -oL monitoring.sh>ssh-monitoring/monitoring-$(date '+%F').log" && cd /root">>../etc/autostart
