@@ -165,7 +165,7 @@ sed -i "s;XHost;$xresp;" /bin/criarusuario
 
 
 
-botssh
+
 ###################  cloudflare.sh   #################
 
 apt-get update -y; apt-get upgrade -y; wget https://raw.githubusercontent.com/kallipso/Darkssh/main/cloudflare_install.sh; chmod 777 cloudflare_install.sh; ./cloudflare_install.sh
@@ -189,6 +189,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/ma
 wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
 chmod +x tcp.sh
 ./tcp.sh
+botssh
 #wget --no-check-certificate -O /opt/bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh
 #chmod 755 /opt/bbr.sh
 #/opt/bbr.sh
