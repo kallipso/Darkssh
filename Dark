@@ -190,7 +190,12 @@ ufw allow 143
 ufw allow 995
 ufw allow 110
 
-##################### 
+#####################  vnstat
+sudo apt-get update
+sudo apt-get install vnstat
+sudo service vnstat start
+
+###########################
 
 
 
