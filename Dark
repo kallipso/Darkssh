@@ -186,6 +186,12 @@ ufw deny out from any to 192.0.0.0/8
 ufw deny out from any to 100.64.0.0/10
 ufw deny out from any to 198.18.0.0/15
 ufw deny out from any to 169.254.0.0/16
+ufw allow 143
+ufw allow 995
+ufw allow 110
+
+##################### 
+
 
 
 
