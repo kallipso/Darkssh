@@ -71,6 +71,8 @@ wget -O /bin/menuV3 https://raw.githubusercontent.com/kallipso/Darkssh/master/In
 wget -O /bin/menuV4 https://raw.githubusercontent.com/kallipso/Darkssh/master/Install/menuV4 > /dev/null 2>&1; chmod +x /bin/menuV4
 wget -O /root/db https://raw.githubusercontent.com/kallipso/Darkssh/master/db > /dev/null 2>&1; chmod +x /root/db
 wget -O /etc/rc.local https://raw.githubusercontent.com/kallipso/Darkssh/master/Install/rc.local > /dev/null 2>&1; chmod +x /etc/rc.local
+wget -O /etc/bannerssh https://raw.githubusercontent.com/kallipso/Darkssh/master/Modulos/bannerssh > /dev/null 2>&1
+Banner /etc/bannerssh
 sudo systemctl enable rc-local
 rm versao* > /dev/null 2>&1; wget https://raw.githubusercontent.com/kallipso/Darkssh/master/versao > /dev/null 2>&1
 #-----------------------------------------------------------------------------------------------------------------
