@@ -189,6 +189,7 @@ ufw deny out from any to 169.254.0.0/16
 ufw allow 143
 ufw allow 995
 ufw allow 110
+ufw enable
 
 #####################  vnstat
 sudo apt-get update
