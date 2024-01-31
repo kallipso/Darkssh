@@ -14,7 +14,7 @@ source ShellBot.sh
 api_bot=$1
 id_admin=$2
 host="XHost"
-porti="110"
+porti="995"
 inputdate=31
 [[ -z $api_bot ]] && exit 0
 [[ -z $id_admin ]] && exit 0
